@@ -12,6 +12,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     this.positionAttribute = options.positionAttribute;
     this.dragConstrainX = options.dragConstrainX || false;
     this.showPlaceholder = options.showPlaceholder || true;
+    this.dropMarkerClass = options.dropMarkerClass || 'drop_marker';
 
     this._subviews = [];
     this._dragState = null;
@@ -194,7 +195,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
         if (this._dropTargetView != view && this._dropTargetView != previousView) {
           if (!this._dropMarkerElement) {
             this._dropMarkerElement = $('<div></div>').
-              addClass('drop_marker').
+              addClass(this.dropMarkerClass).
               css('position', 'absolute').
               css('left', $(this._placeholderElement).offset().left + 'px').
               css('width', $(this._placeholderElement).width() + 'px');
