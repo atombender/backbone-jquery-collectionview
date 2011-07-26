@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+    <script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+    <script src="../jquery_collection_view.js"></script>
+    <style>
+      body {
+        padding: 100px 200px;
+      }
+      #item_list {
+        width: 400px;
+      }
+      .item {
+        padding: 10px;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        list-style: none;
+        cursor: move;
+        margin: 0;
+      }
+      li:hover {
+        background: #f0f0f0;        
+      }
+      .item.dragging {
+        opacity: 0.5;
+        z-index: 5000;
+      }
+      ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;        
+      }
+      .drop_marker {
+        height: 3px;
+        display: block;
+        background: #7db0ff;
+        z-index: 10000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Items</h1>
+    <p>Drag to change order.</p>
+    <ol id="item_list"></ol>
+
+    <script>
+      Item = Backbone.Model.extend({
+      });
+      
+      ItemCollection = Backbone.Collection.extend({
+        model: Item
+      });
+
+      ItemView = Backbone.View.extend({
+        tagName: 'li', 
+
+        className: 'item',
+
+        initialize: function(spec) {
+          _.bindAll(this, 'render');
+          this.model.bind('change', this.render);
+          this.model.view = this;
+        },
+
+        render: function() {
+          $(this.el).html(this.model.get('title'));
+          return this;
+        }
+      });
+
+      ItemCollectionView = Backbone.JQuery.CollectionView.extend({
+        initialize: function(options) {
+          Backbone.JQuery.CollectionView.prototype.initialize.call(this, options);
+          _.bindAll(this, 'createSubview');
+        },
+
+        createSubview: function(model) {
+          return new ItemView({model: model});
+        }
+      });
+
+      $(document).ready(function () {
+        var collection = new ItemCollection();
+        collection.add(new Item({title: "An item"}));
+        collection.add(new Item({title: "One more item"}));
+        collection.add(new Item({title: "Third item"}));
+        collection.add(new Item({title: "Four, really?"}));
+        collection.add(new Item({title: "Five is stretching it!"}));
+
+        new ItemCollectionView({
+          el: "#item_list",
+          tagName: 'li',
+          collection: collection,
+          dragConstraintX: true
+        }).render();
+      });
+    </script>
+  </body>
+</html>
