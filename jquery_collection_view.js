@@ -11,7 +11,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     this.draggingClass = options.draggingClass || 'dragging';
     this.positionAttribute = options.positionAttribute;
     this.dragConstrainX = options.dragConstrainX || false;
-    this.showPlaceholder = options.showPlaceholder || true;
+    this.showPlaceholder = typeof options.showPlaceholder != 'undefined' ? options.showPlaceholder : true;
     this.dropMarkerClass = options.dropMarkerClass || 'drop_marker';
 
     this._subviews = [];
