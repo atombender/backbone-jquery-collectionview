@@ -1,14 +1,19 @@
 Collection view for Backbone and JQuery
 =======================================
 
-`Backbone.JQuery.CollectionView` is a generic, reusable view implementation which provides automatic creation of item views, as well as rudimentary reordering using mouse dragging, similar to JQuery's `Sortable`. Currently only vertical dragging is supported.
+This library provides a generic, reusable view which provides:
+
+* Automatic management of item views
+* Reordering using mouse dragging
+
+Currently only vertical dragging is supported. Future plans include horizontal and hierarchical dragging and HTML5 drag/drop.
 
 Usage
 -----
 
 There are some examples in the `examples` directory. Basically:
 
-* Subclass the collection view and override the `createSubview()` method to return a view that corresponds to each model in the collection.
+* Subclass `Backbone.JQuery.CollectionView` and override the `createSubview()` method to return a view that corresponds to each model in the collection.
 * Instantiate the collection view with a hash of options.
 * Call `render()` on the view.
 
