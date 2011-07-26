@@ -149,10 +149,16 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
           Math.abs(event.pageY + this._dragAnchorY - this._dragStartY - $(document).scrollTop()) > this.dragTolerance) {
           this._dragState = 'dragging';
           
+          this._placeholderWidth = $(view.el).outerWidth();
           this._placeholderElement =
             $("<" + view.el.tagName + "></" + view.el.tagName + ">").
-            css('height', (this.showPlaceholder ? $(view.el).outerHeight() : 0) + 'px').
+            css('width', this._placeholderWidth + 'px').
+            css('height', $(view.el).outerHeight() + 'px').
             insertBefore(view.el);
+          this._placeholderOffset = $(this._placeholderElement).offset();
+          if (!this.showPlaceholder) {
+            $(this._placeholderElement).slideUp('fast');
+          }
 
           $(view.el).css('width', $(view.el).width() + 'px');
           $(view.el).css('height', $(view.el).height() + 'px');
@@ -174,7 +180,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
         }
 
         if (this.dragConstrainX) {
-          $(view.el).css('left', this._placeholderElement.offset().left + 'px');
+          $(view.el).css('left', this._placeholderOffset.left + 'px');
         } else {
           $(view.el).css('left', (event.pageX + this._dragAnchorX) + 'px');
         }
@@ -192,13 +198,13 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
           }
         }
         
-        if (this._dropTargetView != view && this._dropTargetView != previousView) {
+        if (this._dropTargetView != view && (!this.showPlaceholder || this._dropTargetView != previousView)) {
           if (!this._dropMarkerElement) {
             this._dropMarkerElement = $('<div></div>').
               addClass(this.dropMarkerClass).
               css('position', 'absolute').
-              css('left', $(this._placeholderElement).offset().left + 'px').
-              css('width', $(this._placeholderElement).width() + 'px');
+              css('left', this._placeholderOffset.left + 'px').
+              css('width', this._placeholderWidth + 'px');
             $(document.documentElement).append(this._dropMarkerElement);
           }
           if (this._dropTargetView == this) {
