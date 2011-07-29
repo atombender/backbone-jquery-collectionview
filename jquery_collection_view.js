@@ -6,6 +6,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     _.bindAll(this, 'render', '_renderOnReorder', '_setupSubviewElement', '_remove', '_add', '_reset');
 
     options = options || {};
+    this.dragging = typeof options.dragging != 'undefined' ? options.dragging : true;
     this.dragTolerance = options.dragTolerance || 10;
     this.scrollTolerance = options.scrollTolerance || 40;
     this.draggingClass = options.draggingClass || 'dragging';
@@ -117,7 +118,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
   },
 
   _mayDrag: function() {
-    return this._subviews.length > 1;
+    return this.dragging && this._subviews.length > 1;
   },
 
   _beginDrag: function(event, view) {
