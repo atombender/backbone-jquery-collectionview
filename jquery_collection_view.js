@@ -6,7 +6,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     _.bindAll(this, 'render', '_renderOnReorder', '_setupSubviewElement', '_remove', '_add', '_reset');
 
     options = options || {};
-    this.dragging = typeof options.dragging != 'undefined' ? options.dragging : true;
+    this.draggingEnabled = typeof options.dragging != 'undefined' ? options.dragging : true;
     this.dragTolerance = options.dragTolerance || 10;
     this.scrollTolerance = options.scrollTolerance || 40;
     this.draggingClass = options.draggingClass || 'dragging';
@@ -37,17 +37,26 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     });
   },
 
+  setDraggingEnabled: function(enabled) {
+    if (this.draggingEnabled != enabled) {
+      this.draggingEnabled = enabled;
+      this.refresh();
+    }
+  },
+
   createSubview: function(model) {
     throw "Not implemented";
   },
 
   _setupSubviewElement: function(view) {
     var el = view.render().el;
-    el.unselectable = 'on';
-    el.draggable = false;
-    $(el).bind('mousedown selectstart', function(event) {
-      event.preventDefault();
-    });
+    if (this.draggingEnabled) {
+      el.unselectable = 'on';
+      el.draggable = false;
+      $(el).bind('mousedown selectstart', function(event) {
+        event.preventDefault();
+      });
+    }
 
     var self = this;
     $(el).mousedown(function(event) {
@@ -118,7 +127,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
   },
 
   _mayDrag: function() {
-    return this.dragging && this._subviews.length > 1;
+    return this.draggingEnabled && this._subviews.length > 1;
   },
 
   _beginDrag: function(event, view) {

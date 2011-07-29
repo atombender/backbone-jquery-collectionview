@@ -24,6 +24,7 @@ When instantiating the collection view, the following option is required:
 
 Optional options:
 
+* `dragging`: Set whether to enable drag and drop. Defaults to true.
 * `dragTolerance`: The number of pixels that the mouse must be moved before the view interprets the action as a dragging movement.
 * `scrollTolerance`: The number of pixels that the mouse must be within the edge of the window in order to trigger scrolling when dragging.
 * `draggingClass`: Class name to add to item views when dragging. Defaults to `dragging`.
