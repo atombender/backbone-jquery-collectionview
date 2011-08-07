@@ -53,6 +53,14 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     throw "Not implemented";
   },
 
+  getSubviewFromElement: function(element) {
+    return _(this._subviews).select(function(v) { return v.el === element; })[0];
+  },
+
+  getSubviewFromModel: function(model) {
+    return _(this._subviews).select(function(v) { return v.model === model; })[0];
+  },
+
   _setupSubviewElement: function(view) {
     var el = view.render().el;
     if (this.draggingEnabled) {
@@ -85,7 +93,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
   },
 
   _remove: function(model) {
-    var view = _(this._subviews).select(function(v) { return v.model === model; })[0];
+    var view = this.getSubviewFromModel(model);
     if (view) {
       this._subviews = _(this._subviews).without(view);
       if (this._rendered) {
