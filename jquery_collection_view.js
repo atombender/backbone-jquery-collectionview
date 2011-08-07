@@ -17,6 +17,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
 
     this._subviews = [];
     this._dragState = null;
+    this._containerElement = this.getContainer();
 
     this.collection.bind('add', this._add);
     this.collection.bind('remove', this._remove);
@@ -44,6 +45,10 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     }
   },
 
+  getContainer: function() {
+    return this.$('ol, ul')[0] || this.el;
+  },
+
   createSubview: function(model) {
     throw "Not implemented";
   },
@@ -68,12 +73,14 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
 
   _add: function(model) {
     var view = this.createSubview(model);
-    this._subviews.push(view);
+    if (view) {
+      this._subviews.push(view);
 
-    // FIXME: This is a lazy way of reordering, we could place it in the right spot right away
-    if (this._rendered) {
-      $(this.el).append(this._setupSubviewElement(view));
-      this._renderOnReorder();
+      // FIXME: This is a lazy way of reordering, we could place it in the right spot right away
+      if (this._rendered) {
+        $(this._containerElement).append(this._setupSubviewElement(view));
+        this._renderOnReorder();
+      }
     }
   },
 
@@ -97,13 +104,15 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     this._endDrag();
 
     this._subviews.length = 0;
-    $(this.el).empty();
+    $(this._containerElement).empty();
 
     var self = this;
     this.collection.each(function(model) {
       var view = self.createSubview(model);
-      self._subviews.push(view);
-      $(self.el).append(self._setupSubviewElement(view));
+      if (view) {
+        self._subviews.push(view);
+        $(self._containerElement).append(self._setupSubviewElement(view));
+      }
     });
 
     return this;
@@ -264,7 +273,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
     if (this._dragSibling) {
       $(view.el).insertBefore(this._dragSibling);
     } else {
-      $(view.el).appendTo(this.el);
+      $(view.el).appendTo(this._containerElement);
     }
 
     $(view.el).
