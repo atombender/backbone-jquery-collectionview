@@ -139,7 +139,7 @@ Backbone.JQuery.CollectionView = Backbone.View.extend({
       }
     })
     _.each(this._subviews, function(view) {
-      $(self.el).append(view.el);
+      $(self._containerElement).append(view.el);
     })
   },
 
